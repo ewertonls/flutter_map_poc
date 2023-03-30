@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:home_maps/protection_status.dart';
 import 'package:home_maps/widgets/map_widget.dart';
 
+import '../app_status.dart';
 import 'map_page.dart';
 
 class HomePage extends StatefulWidget {

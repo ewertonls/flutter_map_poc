@@ -83,38 +83,33 @@ class _HomePageState extends State<HomePage> {
               duration: const Duration(seconds: 1),
               curve: Curves.fastLinearToSlowEaseIn,
               height: mediaQuery.size.height * mapHeight,
-              child: Hero(
-                tag: 'deviceblablabla',
-                child: Material(
-                  child: MapWidget(
-                    isImmersiveMode: isImmersiveMode,
-                    isProtected: isAppActive,
-                    onTap: () {
-                      // descomente qual versão quiser testar
-                      // versão com navegação de rota
+              child: MapWidget(
+                isImmersiveMode: isImmersiveMode,
+                isProtected: isAppActive,
+                onTap: () {
+                  // descomente qual versão quiser testar
+                  // versão com navegação de rota
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MapPage(
-                            isProtected: isAppActive,
-                          ),
-                        ),
-                      );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MapPage(
+                        isProtected: isAppActive,
+                      ),
+                    ),
+                  );
 
-                      // versão de imersão na home
+                  // versão de imersão na home
 
-                      // setState(() {
-                      //   isImmersiveMode = true;
-                      // });
-                    },
-                    onExitImmersiveMode: () {
-                      setState(() {
-                        isImmersiveMode = false;
-                      });
-                    },
-                  ),
-                ),
+                  // setState(() {
+                  //   isImmersiveMode = true;
+                  // });
+                },
+                onExitImmersiveMode: () {
+                  setState(() {
+                    isImmersiveMode = false;
+                  });
+                },
               ),
             ),
           ),

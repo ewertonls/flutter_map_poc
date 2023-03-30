@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({
@@ -21,12 +21,35 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  final exampleLocation = LatLng(-9.6090982, -35.7006511);
-  final iconSize = const Size.square(64);
+  final exampleLocation = const LatLng(-9.6090982, -35.7006511);
+  // não é respeitado no google maps
+  // final iconSize = const Size.square(64);
 
-  String get deviceImage => widget.isProtected
-      ? 'assets/device_active.png'
-      : 'assets/device_inactive.png';
+  final activeIconPath = 'assets/device_active.png';
+  final inactiveIconPath = 'assets/device_inactive.png';
+
+  Map<String, BitmapDescriptor> markerIcons = {};
+
+  BitmapDescriptor? get deviceImage => widget.isProtected
+      ? markerIcons[activeIconPath]
+      : markerIcons[inactiveIconPath];
+
+  @override
+  void initState() {
+    super.initState();
+    loadAssetIcon();
+  }
+
+  Future<void> loadAssetIcon() async {
+    final activeIconData = await rootBundle.load(activeIconPath);
+    final inactiveIconData = await rootBundle.load(inactiveIconPath);
+
+    markerIcons[activeIconPath] =
+        BitmapDescriptor.fromBytes(activeIconData.buffer.asUint8List());
+    markerIcons[inactiveIconPath] =
+        BitmapDescriptor.fromBytes(inactiveIconData.buffer.asUint8List());
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,37 +57,21 @@ class _MapWidgetState extends State<MapWidget> {
     final textTheme = Theme.of(context).textTheme;
     return Stack(
       children: [
-        FlutterMap(
-          options: MapOptions(
-            center: exampleLocation,
-            zoom: 17,
-            interactiveFlags: InteractiveFlag.none,
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.example.home_maps',
-            ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: exampleLocation,
-                  width: 90,
-                  height: 90,
-                  builder: (context) {
-                    return Tooltip(
-                      triggerMode: TooltipTriggerMode.tap,
-                      message: 'Bateria 100%',
-                      child: InkWell(
-                        onTap: widget.onTap,
-                        child: Image(image: AssetImage(deviceImage)),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
+        GoogleMap(
+          zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
+          zoomGesturesEnabled: false,
+          initialCameraPosition:
+              CameraPosition(target: exampleLocation, zoom: 16),
+          markers: {
+            Marker(
+              markerId: const MarkerId('deviceicon'),
+              icon: deviceImage ?? BitmapDescriptor.defaultMarker,
+              position: exampleLocation,
+              anchor: const Offset(0.5, 0.5),
+              onTap: widget.onTap,
+            )
+          },
         ),
         Visibility(
           visible: widget.isImmersiveMode,

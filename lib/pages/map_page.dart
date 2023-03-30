@@ -78,10 +78,7 @@ class _MapPageState extends State<MapPage> {
           ],
         ),
       ),
-      body: Hero(
-        tag: 'deviceblablabla',
-        child: Material(child: MapWidget(isProtected: widget.isProtected)),
-      ),
+      body: MapWidget(isProtected: widget.isProtected),
     );
   }
 }

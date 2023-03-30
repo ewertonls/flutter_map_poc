@@ -5,6 +5,10 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <!-- A chave de api precisa estar restrita para o app no cloud console -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                android:value="ANDROID_SDK_API_KEY_HERE"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
